@@ -5,6 +5,12 @@ Ritmo is a music bot with expanded functionallity. This includes retrieving play
 
 ## Installation
 
+### Requirements
+A conventional requirements file is included which means that all dependencies can be installed by navigating to the project directory and typing the following in your terminal:
+```
+$ pip install -r requirements.txt
+```
+
 ## Commands
 
 ## Current use
