@@ -35,16 +35,25 @@ class Ritmo(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content.starswith("!play ", 0, 6):
+        if message.content == "!hi":
+            await self.hello(message)
+
+        if message.content.startswith("!play"):
             self.queue.push_song(message.content[6:])
+
+    @staticmethod
+    async def hello(message):
+        """Sends a message saying "Hi!"."""
+        await message.channel.send("Hi!")
 
     async def play(self, song):
         pass
 
 
-client = Ritmo()
+if __name__ == '__main__':
+    client = Ritmo()
 
-# Pulling the token from the config file and using it to set up the bot.
-with open("config.json", "r") as config:
-    config_dict = json.load(config)
-    client.run(config_dict["token"])
+    # Pulling the token from the config file and using it to set up the bot.
+    with open("config.json", "r") as config:
+        config_dict = json.load(config)
+        client.run(config_dict["token"])
