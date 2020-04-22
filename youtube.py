@@ -2,7 +2,9 @@
 Module with functions related to finding and downloading videos from youtube.
 """
 import urllib.request
+import youtube_dl
 from bs4 import BeautifulSoup
+from pathlib import Path
 
 
 def get_video_url(video_name):
@@ -37,7 +39,23 @@ def download_mp3(url, save_folder):
     :param save_folder: The folder to which the mp3 file will be saved.
     :return: None
     """
-    pass
+    # Creating the save folder if it does not already exist.
+    Path(save_folder).mkdir(parents=True, exist_ok=True)
+
+    # Setting the options for the youtube downloader.
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "outtmpl": save_folder + "%(id)s.%(ext)s",
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192",
+        }],
+    }
+
+    # Downloading the audio from the given url using the above specified options.
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
 
 
-print(get_video_url("hello world"))
+download_mp3(get_video_url("hello world"), "audio_files/")

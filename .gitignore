@@ -212,3 +212,5 @@ fabric.properties
 /config.json
 
 .idea/
+
+/audio_files
