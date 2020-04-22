@@ -39,15 +39,20 @@ class Ritmo(discord.Client):
             await self.hello(message)
 
         if message.content.startswith("!play"):
-            self.queue.push_song(message.content[6:])
+            await self.play(message)
 
     @staticmethod
     async def hello(message):
         """Sends a message saying "Hi!"."""
         await message.channel.send("Hi!")
 
-    async def play(self, song):
-        pass
+    async def play(self, message):
+        author = message.author
+        voice_channel = author.voice.channel
+
+        voice_client = await voice_channel.connect()
+
+        voice_client.play(discord.FFmpegPCMAudio("audio_files/Yw6u6YkTgQ4.mp3"))
 
 
 if __name__ == '__main__':
