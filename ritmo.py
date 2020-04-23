@@ -5,7 +5,10 @@ The discord bot is implemented using a class based design with the "discord.Clie
 """
 import json
 import discord
-import song_queue
+import youtube
+
+from song_queue import SongQueue
+from player import Player
 
 
 class Ritmo(discord.Client):
@@ -15,8 +18,9 @@ class Ritmo(discord.Client):
     """
 
     def __init__(self, **options):
-        self.queue = song_queue.SongQueue()
+        self.song_queue = SongQueue()
         super().__init__(**options)
+        self.player = None
 
     async def on_ready(self):
         """Displaying information about the bot when it is ready to run."""
@@ -47,12 +51,12 @@ class Ritmo(discord.Client):
         await message.channel.send("Hi!")
 
     async def play(self, message):
-        author = message.author
-        voice_channel = author.voice.channel
+        self.song_queue.push_song(youtube.get_youtube_video(message.content[6:], "audio_files/"))
 
-        voice_client = await voice_channel.connect()
-
-        voice_client.play(discord.FFmpegPCMAudio("audio_files/Yw6u6YkTgQ4.mp3"))
+        if self.player is None:
+            voice_channel = message.author.voice.channel
+            self.player = Player(voice_channel, self.user, self.song_queue)
+            self.player.play()
 
 
 if __name__ == '__main__':
