@@ -37,7 +37,7 @@ def download_mp3(url, save_folder):
 
     :param url: The youtube url of the video from which the audio will be downloaded.
     :param save_folder: The folder to which the mp3 file will be saved.
-    :return: None
+    :return: Returns the file name of the video that was downloaded.
     """
     # Creating the save folder if it does not already exist.
     Path(save_folder).mkdir(parents=True, exist_ok=True)
@@ -57,5 +57,17 @@ def download_mp3(url, save_folder):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
+        return ydl_opts["outtmpl"]
 
-download_mp3(get_video_url("hello world"), "audio_files/")
+
+def get_youtube_video(video_name, save_folder):
+    """
+    Searches youtube for the video name and downloads the audio from the first video found.
+
+    :param video_name: The search query that will be used to search for the video on youtube.
+    :param save_folder: The folder to which the mp3 file will be saved.
+    :return: Returns the file name of the video that was downloaded.
+    """
+    url = get_video_url(video_name)
+
+    return download_mp3(url, save_folder)
