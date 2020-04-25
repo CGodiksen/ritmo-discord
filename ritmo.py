@@ -60,6 +60,9 @@ class Ritmo(discord.Client):
             if self.player is not None:
                 self.player.skip()
 
+        if message.content.startswith("!queue"):
+            await message.channel.send(str(self.song_queue))
+
     async def play(self, message):
         """Adds the song to the queue and starts playing songs from the queue. Creates a player if there is none."""
         # Appending the requested song to the song queue.

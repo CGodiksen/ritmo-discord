@@ -45,7 +45,7 @@ def download_mp3(url, save_folder):
     # Setting the options for the youtube downloader.
     ydl_opts = {
         "format": "bestaudio/best",
-        "outtmpl": save_folder + "%(id)s.%(ext)s",
+        "outtmpl": save_folder + "%(title)s.%(ext)s",
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
@@ -58,7 +58,7 @@ def download_mp3(url, save_folder):
         info = ydl.extract_info(url, download=True)
 
         # TODO: Handle returning the correct filename in a slightly more elegant manner.
-        return save_folder + info["id"] + ".mp3"
+        return save_folder + info["title"] + ".mp3"
 
 
 def get_youtube_video(video_name, save_folder):
