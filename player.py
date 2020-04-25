@@ -40,7 +40,7 @@ class Player:
             # If there are any songs in the queue we play the song that is first in the queue.
             if self.song_queue.queue:
                 # Recursively calls the Player.play function after the song is done to iterate through the queue.
-                self.voice_client.play(discord.FFmpegPCMAudio(source=self.song_queue.pop_song()), after=self.play)
+                self.voice_client.play(discord.FFmpegPCMAudio(self.song_queue.pop_song()), after=self.play)
 
     async def stop(self, message):
         """Stops the audio and disconnects the bot from the voice channel."""

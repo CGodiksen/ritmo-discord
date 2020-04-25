@@ -72,7 +72,8 @@ class Ritmo(discord.Client):
         if self.player is None:
             voice_channel = message.author.voice.channel
             self.player = await Player.create(voice_channel, self.user, self.song_queue)
-            self.player.play()
+
+        self.player.play()
 
     async def stop(self, message):
         """Stops the audio and disconnects the bot from the voice channel."""
