@@ -33,10 +33,11 @@ class Player:
 
     def play(self, error=None):
         """Iteratively plays every song in the song queue."""
+        # Needed by discord.py internal design when this function is called recursively in after=self.play.
         if error:
             raise Exception(str(error))
 
-        if self.voice_client is not None:
+        if not self.voice_client.is_playing():
             # If there are any songs in the queue we play the song that is first in the queue.
             if self.song_queue.queue:
                 # Recursively calls the Player.play function after the song is done to iterate through the queue.

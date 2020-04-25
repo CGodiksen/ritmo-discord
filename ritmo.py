@@ -39,7 +39,7 @@ class Ritmo(discord.Client):
             return
 
         if message.content == "!hi":
-            await self.hello(message)
+            await message.channel.send("Hi!")
 
         if message.content.startswith("!play"):
             await self.play(message)
@@ -60,15 +60,13 @@ class Ritmo(discord.Client):
             if self.player is not None:
                 self.player.skip()
 
-    @staticmethod
-    async def hello(message):
-        """Sends a message saying "Hi!"."""
-        await message.channel.send("Hi!")
-
     async def play(self, message):
-        """Adds the song to the queue and creates a player if there is none."""
+        """Adds the song to the queue and starts playing songs from the queue. Creates a player if there is none."""
+        # Appending the requested song to the song queue.
         self.song_queue.push_song(youtube.get_youtube_video(message.content[6:], "audio_files/"))
         print(self.song_queue.queue)
+
+        # Creating a player if there currently is none.
         if self.player is None:
             voice_channel = message.author.voice.channel
             self.player = await Player.create(voice_channel, self.user, self.song_queue)
