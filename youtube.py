@@ -28,7 +28,7 @@ def get_video_url(video_name):
 
     # Parsing through the html and searching for the first video element on the search result page, signified by the
     # CSS class "yt-uix-tile-link".
-    return f"https://www.youtube.com{soup.find(class_='yt-uix-tile-link')['href']}"
+    return "https://www.youtube.com" + str(soup.find(class_='yt-uix-tile-link')['href'])
 
 
 def download_mp3(url, save_folder):
@@ -55,9 +55,10 @@ def download_mp3(url, save_folder):
 
     # Downloading the audio from the given url using the above specified options.
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+        info = ydl.extract_info(url, download=True)
 
-        return ydl_opts["outtmpl"]
+        # TODO: Handle returning the correct filename in a slightly more elegant manner.
+        return save_folder + info["id"] + ".mp3"
 
 
 def get_youtube_video(video_name, save_folder):
