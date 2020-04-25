@@ -45,7 +45,20 @@ class Ritmo(discord.Client):
             await self.play(message)
 
         if message.content.startswith("!stop"):
-            await self.stop(message)
+            if self.player is not None:
+                await self.stop(message)
+
+        if message.content.startswith("!pause"):
+            if self.player is not None:
+                self.player.pause()
+
+        if message.content.startswith("!resume"):
+            if self.player is not None:
+                self.player.resume()
+
+        if message.content.startswith("!skip"):
+            if self.player is not None:
+                self.player.skip()
 
     @staticmethod
     async def hello(message):
@@ -55,18 +68,16 @@ class Ritmo(discord.Client):
     async def play(self, message):
         """Adds the song to the queue and creates a player if there is none."""
         self.song_queue.push_song(youtube.get_youtube_video(message.content[6:], "audio_files/"))
-
+        print(self.song_queue.queue)
         if self.player is None:
             voice_channel = message.author.voice.channel
-            self.player = Player(voice_channel, self.user, self.song_queue)
-            await self.player.play()
+            self.player = await Player.create(voice_channel, self.user, self.song_queue)
+            self.player.play()
 
     async def stop(self, message):
         """Stops the audio and disconnects the bot from the voice channel."""
-        # Only works if the message is from a user that is in the same voice channel as the bot.
-        if self.player is not None and message.author.voice.channel.id == self.player.voice_channel.id:
-            await self.player.stop()
-            self.player = None
+        await self.player.stop(message)
+        self.player = None
 
 
 if __name__ == '__main__':
