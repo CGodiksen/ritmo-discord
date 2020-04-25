@@ -14,7 +14,7 @@ class Player:
     @classmethod
     async def create(cls, voice_channel, user, song_queue):
         """
-        Initializing the Player object with all needed attributes.
+        Initializing the attributes of the Player object using the factory pattern.
 
         :param voice_channel: The voice channel that the person that typed the "!play" command is in.
         :param user: The user representing the bot itself.
@@ -38,7 +38,7 @@ class Player:
 
         if self.voice_client is not None:
             # If there are any songs in the queue we play the song that is first in the queue.
-            if self.song_queue:
+            if self.song_queue.queue:
                 # Recursively calls the Player.play function after the song is done to iterate through the queue.
                 self.voice_client.play(discord.FFmpegPCMAudio(source=self.song_queue.pop_song()), after=self.play)
 
