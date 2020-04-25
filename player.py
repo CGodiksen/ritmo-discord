@@ -10,6 +10,7 @@ class Player:
         self.user = None
         self.song_queue = None
         self.voice_client = None
+        self.current = None
 
     @classmethod
     async def create(cls, voice_channel, user, song_queue):
@@ -40,8 +41,9 @@ class Player:
         if not self.voice_client.is_playing():
             # If there are any songs in the queue we play the song that is first in the queue.
             if self.song_queue.queue:
+                self.current = self.song_queue.pop_song()
                 # Recursively calls the Player.play function after the song is done to iterate through the queue.
-                self.voice_client.play(discord.FFmpegPCMAudio(self.song_queue.pop_song()), after=self.play)
+                self.voice_client.play(discord.FFmpegPCMAudio(self.current), after=self.play)
 
     async def stop(self, message):
         """Stops the audio and disconnects the bot from the voice channel."""
@@ -62,3 +64,10 @@ class Player:
     def skip(self):
         """Skips the currently playing song."""
         self.voice_client.stop()
+
+    async def now_playing(self, message):
+        """Sends a message displaying the currently playing song."""
+        if self.voice_client and self.voice_client.is_playing():
+            await message.channel.send("```Now playing:\n" + self.current[12:-4] + "```")
+        else:
+            await message.channel.send("```Currently not playing anything.```")
