@@ -68,6 +68,6 @@ class Player:
     async def now_playing(self, message):
         """Sends a message displaying the currently playing song."""
         if self.voice_client and self.voice_client.is_playing():
-            await message.channel.send("```Now playing:\n" + self.current[12:-4] + "```")
+            await message.channel.send("```Now playing:\n" + self.current[24:-4] + "```")
         else:
             await message.channel.send("```Currently not playing anything.```")

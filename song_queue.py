@@ -1,11 +1,17 @@
+import youtube
+
+
 class SongQueue:
     """Class representing a queue containing songs."""
 
     def __init__(self):
         self.queue = []
 
-    def push_song(self, song):
+    def push_song(self, search_query):
+        song = youtube.get_youtube_video(search_query, "audio_files/")
         self.queue.append(song)
+
+        print(self.queue)
 
     def pop_song(self):
         return self.queue.pop(0)
@@ -18,7 +24,7 @@ class SongQueue:
         # If there are any songs in the queue we list the song names in a numbered list.
         if self.queue:
             for counter, song in enumerate(self.queue):
-                queue_str += str(counter + 1) + ". " + song[12:-4] + "\n"
+                queue_str += str(counter + 1) + ". " + song[24:-4] + "\n"
         else:
             queue_str += "The queue is empty."
 
