@@ -5,6 +5,7 @@ import urllib.request
 import youtube_dl
 from bs4 import BeautifulSoup
 from pathlib import Path
+import os
 
 
 def get_video_url(video_name):
@@ -33,7 +34,8 @@ def get_video_url(video_name):
 
 def download_mp3(url, save_folder):
     """
-    Downloads the youtube video from the url as an mp3 file and saves it to the given folder.
+    Downloads the youtube video from the url as an mp3 file and saves it to the given folder. If the video already
+    exists in the folder it is not re-downloaded.
 
     :param url: The youtube url of the video from which the audio will be downloaded.
     :param save_folder: The folder to which the mp3 file will be saved.
@@ -55,10 +57,15 @@ def download_mp3(url, save_folder):
 
     # Downloading the audio from the given url using the above specified options.
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
+        info = ydl.extract_info(url, download=False)
 
-        # TODO: Handle returning the correct filename in a slightly more elegant manner.
-        return save_folder + info["id"] + "." + info["title"] + ".mp3"
+        filepath = save_folder + info["id"] + "." + info["title"] + ".mp3"
+
+        # If the file does not already exist in the download folder we download it.
+        if not os.path.isfile(filepath):
+            ydl.download([url])
+
+        return filepath
 
 
 def get_youtube_video(video_name, save_folder):
