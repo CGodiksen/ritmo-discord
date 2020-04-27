@@ -5,9 +5,12 @@ The discord bot is implemented using a class based design with the "discord.Clie
 """
 import json
 import discord
+import pickle
+import os
 
 from song_queue import SongQueue
 from player import Player
+from playlist import Playlist
 
 
 class Ritmo(discord.Client):
@@ -64,6 +67,18 @@ class Ritmo(discord.Client):
 
         if message.content.startswith("!np"):
             await self.player.now_playing(message)
+
+        if message.content.startswith("!create playlist"):
+            Playlist(message.content[17:], message.author.name, 123)
+
+        if message.content.startswith("!delete playlist"):
+            os.remove("playlists/" + message.content[17:] + ".pickle")
+
+        if message.content.startswith("!test"):
+            with open("playlists/" + message.content[6:] + ".pickle", "rb") as f:
+                playlist = pickle.load(f)
+
+            print(playlist.name)
 
     async def play(self, message):
         """Adds the song to the queue and starts playing songs from the queue. Creates a player if there is none."""

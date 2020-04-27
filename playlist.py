@@ -1,5 +1,6 @@
 import json
 import os
+import pickle
 from pathlib import Path
 
 
@@ -9,7 +10,7 @@ class Playlist:
     structure after they are played. The playlist is also saved to a specific discord server, thereby making it
     persistent.
     """
-    def __init__(self, name=None, created_by=None):
+    def __init__(self, name, created_by, spotify_uri):
         self.name = name
         self.created_by = created_by
         self.description = None
@@ -22,41 +23,11 @@ class Playlist:
         # Creating the playlists folder if it does not already exist.
         Path(self.folder).mkdir(parents=True, exist_ok=True)
 
-        self.filepath = self.folder + self.name + ".json"
+        self.filepath = self.folder + self.name + ".pickle"
 
-        # Creating the json file that will contain all information about the playlist if we are creating a new playlist.
-        if name is not None and not os.path.isfile(self.filepath):
-            self.save_playlist()
-
-    def __str__(self):
-        return ""
-
-    def load_playlist(self, name):
-        """
-        Loading attributes from the json file corresponding to the given playlist name into the object.
-
-        :param name: The name of the playlist that we load into the object.
-        """
-        self.name = name
-
-        if os.path.isfile(self.filepath):
-            with open(self.filepath, "r") as f:
-                data = json.load(f)
-
-        self.created_by = data["created by"]
-        self.description = data["description"]
-        self.duration = data["duration"]
-        self.songs = data["songs"]
+        # Creating the pickle file that will contain all information about the playlist.
+        self.save_playlist()
 
     def save_playlist(self):
-        """Inserting object attributes into a dict and dumping the dict in the corresponding file."""
-        data = {
-            "name": self.name,
-            "created by": self.created_by,
-            "description": self.description,
-            "duration": self.duration,
-            "songs": self.songs,
-        }
-
-        with open(self.filepath, "w+") as f:
-            json.dump(data, f)
+        with open(self.filepath, "wb") as f:
+            pickle.dump(self, f)
