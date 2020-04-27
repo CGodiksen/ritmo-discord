@@ -14,6 +14,7 @@ class Playlist:
         self.created_by = created_by
         self.description = None
         self.duration = 0
+        # Each song consists of a pair (song_title, song_url).
         self.songs = []
 
         self.folder = "playlists/"
@@ -30,8 +31,22 @@ class Playlist:
     def __str__(self):
         return ""
 
-    def load_playlist(self):
-        pass
+    def load_playlist(self, name):
+        """
+        Loading attributes from the json file corresponding to the given playlist name into the object.
+
+        :param name: The name of the playlist that we load into the object.
+        """
+        self.name = name
+
+        if os.path.isfile(self.filepath):
+            with open(self.filepath, "r") as f:
+                data = json.load(f)
+
+        self.created_by = data["created by"]
+        self.description = data["description"]
+        self.duration = data["duration"]
+        self.songs = data["songs"]
 
     def save_playlist(self):
         """Inserting object attributes into a dict and dumping the dict in the corresponding file."""
