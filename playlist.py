@@ -34,4 +34,14 @@ class Playlist:
         pass
 
     def save_playlist(self):
-        pass
+        """Inserting object attributes into a dict and dumping the dict in the corresponding file."""
+        data = {
+            "name": self.name,
+            "created by": self.created_by,
+            "description": self.description,
+            "duration": self.duration,
+            "songs": self.songs,
+        }
+
+        with open(self.filepath, "w+") as f:
+            json.dump(data, f)
