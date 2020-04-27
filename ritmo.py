@@ -69,7 +69,7 @@ class Ritmo(discord.Client):
             await self.player.now_playing(message)
 
         if message.content.startswith("!create playlist"):
-            Playlist(message.content[17:], message.author.name, 123)
+            Playlist(message.content[17:])
 
         if message.content.startswith("!delete playlist"):
             os.remove("playlists/" + message.content[17:] + ".pickle")

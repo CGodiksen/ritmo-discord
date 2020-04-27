@@ -1,5 +1,3 @@
-import json
-import os
 import pickle
 from pathlib import Path
 
@@ -10,12 +8,12 @@ class Playlist:
     structure after they are played. The playlist is also saved to a specific discord server, thereby making it
     persistent.
     """
-    def __init__(self, name, created_by, spotify_uri):
-        self.name = name
-        self.created_by = created_by
+    def __init__(self, spotify_uri):
+        self.name = "null"
+        self.created_by = None
         self.description = None
         self.duration = 0
-        # Each song consists of a pair (song_title, song_url).
+        # Each song consists of a triple (artist, song_title, song_url).
         self.songs = []
 
         self.folder = "playlists/"
