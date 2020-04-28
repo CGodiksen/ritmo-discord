@@ -8,14 +8,13 @@ from pathlib import Path
 import os
 
 
-def get_video_url(video_name):
+def get_video_title_url(video_name):
     """
-    Searches for the video on youtube and returns the url of the first video found.
+    Searches for the video on youtube and returns the title and url of the first video found.
 
     :param video_name: The name of the video that we search for.
-    :return: The URL of the first video found when searching for the given video name.
+    :return: The title and URL of the first video found when searching for the given video name.
     """
-
     # Parsing the given video name into a youtube search URL.
     query = urllib.parse.quote(video_name)
     url = "https://www.youtube.com/results?search_query=" + query
@@ -29,7 +28,8 @@ def get_video_url(video_name):
 
     # Parsing through the html and searching for the first video element on the search result page, signified by the
     # CSS class "yt-uix-tile-link".
-    return "https://www.youtube.com" + str(soup.find(class_='yt-uix-tile-link')['href'])
+    video = soup.find(class_='yt-uix-tile-link')
+    return video["title"], "https://www.youtube.com" + str(video["href"])
 
 
 def download_mp3(url, save_folder):
@@ -47,6 +47,8 @@ def download_mp3(url, save_folder):
     # Setting the options for the youtube downloader.
     ydl_opts = {
         "format": "bestaudio/best",
+        'noplaylist': True,
+        'nocheckcertificate': True,
         "outtmpl": save_folder + "%(id)s.%(title)s.%(ext)s",
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
@@ -76,6 +78,6 @@ def get_youtube_video(video_name, save_folder):
     :param save_folder: The folder to which the mp3 file will be saved.
     :return: Returns the file name of the video that was downloaded.
     """
-    url = get_video_url(video_name)
+    url = get_video_title_url(video_name)
 
     return download_mp3(url, save_folder)
