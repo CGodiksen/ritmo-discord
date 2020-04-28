@@ -7,6 +7,7 @@ import json
 import discord
 import pickle
 import os
+import youtube
 
 from song_queue import SongQueue
 from player import Player
@@ -88,7 +89,7 @@ class Ritmo(discord.Client):
             self.player = await Player.create(voice_channel, self.user, self.song_queue)
 
         # Appending the requested song to the song queue.
-        self.song_queue.push_song(message.content[6:])
+        self.song_queue.push_song(youtube.get_video_title_url(message.content[6:]))
 
         self.player.play()
 

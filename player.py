@@ -45,6 +45,9 @@ class Player:
                 # Recursively calls the Player.play function after the song is done to iterate through the queue.
                 self.voice_client.play(discord.FFmpegPCMAudio(self.current), after=self.play)
 
+                # Pre-download the first 2 songs on in the queue and add them to the download queue.
+                self.song_queue.update_downloaded_queue()
+
     async def stop(self, message):
         """Stops the audio and disconnects the bot from the voice channel."""
         # Only works if the message is from a user that is in the same voice channel as the bot.

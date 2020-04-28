@@ -13,7 +13,7 @@ class Playlist:
         self.created_by = None
         self.description = None
         self.duration = 0
-        # Each song consists of a triple (artist, song_title, song_url).
+        # Each song consists of a pair (song_artist + song_title, song_url).
         self.songs = []
 
         self.folder = "playlists/"
