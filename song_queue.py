@@ -52,8 +52,10 @@ class SongQueue:
 
         # If there are any songs in the queue we list the song names in a numbered list.
         if self.queue:
-            for counter, song in enumerate(self.queue):
+            for counter, song in enumerate(self.queue[:10]):
                 queue_str += str(counter + 1) + ". " + song[0] + "\n"
+            if len(self.queue) > 10:
+                queue_str += "..."
         else:
             queue_str += "The queue is empty."
 
