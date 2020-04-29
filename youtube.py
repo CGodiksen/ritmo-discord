@@ -30,7 +30,13 @@ def get_video_title_url(video_name):
     # CSS class "yt-uix-tile-link".
     video = soup.find(class_='yt-uix-tile-link')
 
-    return video["title"], "https://www.youtube.com" + str(video["href"])
+    # Wrapping in a try-except to handle the rare cases where an error causes "video" to be None. Since the problem is
+    # not correlated with the video name we simply call the function again with the same parameter.
+    try:
+        return video["title"], "https://www.youtube.com" + str(video["href"])
+    except TypeError:
+        print("Could not find a URL for: " + video_name + "\nTrying again")
+        get_video_title_url(video_name)
 
 
 def download_mp3(url, save_folder):
