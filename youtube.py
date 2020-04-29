@@ -29,6 +29,7 @@ def get_video_title_url(video_name):
     # Parsing through the html and searching for the first video element on the search result page, signified by the
     # CSS class "yt-uix-tile-link".
     video = soup.find(class_='yt-uix-tile-link')
+
     return video["title"], "https://www.youtube.com" + str(video["href"])
 
 
