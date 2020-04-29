@@ -4,11 +4,15 @@ objects used in this module visit https://developer.spotify.com/documentation/we
 """
 import spotipy
 import json
+import pickle
+import pathlib
+import youtube
 from spotipy.oauth2 import SpotifyClientCredentials
 
 
 class SpotifyPlaylist:
     def __init__(self, playlist_uri):
+        # Getting the api client credentials from the config file and using them to set up a Spotify object.
         with open("config.json", "r") as config:
             config_dict = json.load(config)
             self.sp = spotipy.Spotify(client_credentials_manager=
@@ -16,20 +20,32 @@ class SpotifyPlaylist:
                                                                client_secret=config_dict["spotify client secret"]))
         self.playlist = self.sp.playlist(playlist_uri)
 
-    def get_name(self):
-        """Returns the name of the playlist."""
-        return self.playlist["name"]
+        self.name = self.playlist["name"]
+        self.description = self.playlist["description"]
+        # TODO: Add a function to get the total duration of the playlist.
 
-    def get_description(self):
-        """Returns the description of the playlist."""
-        return self.playlist["description"]
+        # Each song consists of a pair (song_title, song_url).
+        self.songs = self.get_songs(self.get_search_queries())
 
-    def get_artists_songs(self):
+        self.folder = "playlists/"
+
+        # Creating the playlists folder if it does not already exist.
+        pathlib.Path(self.folder).mkdir(parents=True, exist_ok=True)
+
+        self.filepath = self.folder + self.name + ".pickle"
+        self.save_playlist()
+
+    def save_playlist(self):
+        """Saving a pickle file that contains all information about the playlist."""
+        with open(self.filepath, "wb") as f:
+            pickle.dump(self, f)
+
+    def get_search_queries(self):
         """
-        Extracts every song from the playlist together with the list of artists that made the song.
+        Extracts every song from the playlist together with the list of artists that made the song to obtain high
+        quality search queries that can be used to find the songs on youtube.
 
-        :return: A string containing the song and every artist that is featured on the song. We return a string since
-        we want to use it as a search query on youtube.
+        :return: A string containing the song and every artist that made the song.
         """
         artists_songs = []
 
@@ -45,8 +61,11 @@ class SpotifyPlaylist:
 
         return artists_songs
 
+    @staticmethod
+    def get_songs(search_queries):
+        """
+        Searches for each song on youtube to find the URL of the corresponding youtube video.
 
-spotify = SpotifyPlaylist("spotify:playlist:37i9dQZEVXcOvNUJbJEQ8Q")
-print(spotify.get_name())
-print(spotify.get_description())
-print(spotify.get_artists_songs())
+        :return: A list of tuples with the format: (song title, youtube URL).
+        """
+        return [youtube.get_video_title_url(search_query) for search_query in search_queries]

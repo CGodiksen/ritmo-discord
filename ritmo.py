@@ -11,7 +11,7 @@ import youtube
 
 from song_queue import SongQueue
 from player import Player
-from playlist import Playlist
+from spotify_playlist import SpotifyPlaylist
 
 
 class Ritmo(discord.Client):
@@ -70,7 +70,7 @@ class Ritmo(discord.Client):
             await self.player.now_playing(message)
 
         if message.content.startswith("!create playlist"):
-            Playlist(message.content[17:])
+            SpotifyPlaylist(message.content[17:])
 
         if message.content.startswith("!delete playlist"):
             os.remove("playlists/" + message.content[17:] + ".pickle")
