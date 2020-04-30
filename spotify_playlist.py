@@ -35,6 +35,20 @@ class SpotifyPlaylist:
         self.filepath = self.folder + self.name + ".pickle"
         self.save_playlist()
 
+    def get_info(self):
+        """Returns a string containing information about the playlist."""
+        # Encapsulating the string representation in "```" to put the text in a code block in discord.
+        info = "```"
+
+        # TODO: Add duration to this.
+        info += self.name + " - " + str(len(self.songs)) + " songs\n\n"
+        info += self.description
+
+        # Completing the code block encapsulation.
+        info += "```"
+
+        return info
+
     def save_playlist(self):
         """Saving a pickle file that contains all information about the playlist."""
         with open(self.filepath, "wb") as f:
@@ -64,7 +78,7 @@ class SpotifyPlaylist:
     @staticmethod
     def get_songs(search_queries):
         """
-        Searches for each song on youtube to find the URL of the corresponding youtube video.
+        Searches for each song on youtube to find the URL of the song.
 
         :return: A list of tuples with the format: (song title, youtube URL).
         """

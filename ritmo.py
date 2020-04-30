@@ -81,6 +81,12 @@ class Ritmo(discord.Client):
 
             print(playlist.name)
 
+        if message.content.startswith("!info"):
+            with open("playlists/" + message.content[6:] + ".pickle", "rb") as f:
+                playlist = pickle.load(f)
+
+            await message.channel.send(playlist.get_info())
+
     async def play(self, message):
         """Adds the song to the queue and starts playing songs from the queue. Creates a player if there is none."""
         # Creating a player if there currently is none.
