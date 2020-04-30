@@ -35,8 +35,8 @@ class SpotifyPlaylist:
         self.filepath = self.folder + self.name + ".pickle"
         self.save_playlist()
 
-    def get_info(self):
-        """Returns a string containing information about the playlist."""
+    def get_info_str(self):
+        """Returns a prettified string containing information about the playlist."""
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
         info = "```"
 

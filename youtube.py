@@ -36,7 +36,7 @@ def get_video_title_url(video_name):
         return video["title"], "https://www.youtube.com" + str(video["href"])
     except TypeError:
         print("Could not find a URL for: " + video_name + "\nTrying again")
-        get_video_title_url(video_name)
+        return get_video_title_url(video_name)
 
 
 def download_mp3(url, save_folder):
