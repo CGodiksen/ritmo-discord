@@ -76,16 +76,17 @@ class Ritmo(discord.Client):
             os.remove("playlists/" + message.content[17:] + ".pickle")
 
         if message.content.startswith("!test"):
-            with open("playlists/" + message.content[6:] + ".pickle", "rb") as f:
-                playlist = pickle.load(f)
+            playlist = SpotifyPlaylist.load_playlist(message.content[6:])
 
             print(playlist.name)
 
         if message.content.startswith("!info"):
-            with open("playlists/" + message.content[6:] + ".pickle", "rb") as f:
-                playlist = pickle.load(f)
+            playlist = SpotifyPlaylist.load_playlist(message.content[6:])
 
             await message.channel.send(playlist.get_info_str())
+
+        if message.content.startswith("!tracklist"):
+            await self.display_tracklist(message)
 
     async def play(self, message):
         """Adds the song to the queue and starts playing songs from the queue. Creates a player if there is none."""
@@ -103,6 +104,19 @@ class Ritmo(discord.Client):
         """Stops the audio and disconnects the bot from the voice channel."""
         await self.player.stop(message)
         self.player = None
+
+    @staticmethod
+    async def display_tracklist(message):
+        """
+        Displays the tracklist of a playlist by sending 25 songs at a time. We are limited to 25 songs due to the
+        character limit on discord messages.
+        """
+        playlist = SpotifyPlaylist.load_playlist(message.content[11:])
+
+        counter = 0
+        while counter < len(playlist.songs):
+            await message.channel.send(playlist.get_songs_str(counter, counter + 25))
+            counter += 25
 
 
 if __name__ == '__main__':
