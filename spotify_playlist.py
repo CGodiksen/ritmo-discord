@@ -25,7 +25,7 @@ class SpotifyPlaylist:
         # TODO: Add a function to get the total duration of the playlist.
 
         # Each song consists of a pair (song_title, song_url).
-        self.songs = self.get_songs(self.get_search_queries())
+        self.tracklist = self.get_tracklist(self.get_search_queries())
 
         self.folder = "playlists/"
 
@@ -41,7 +41,7 @@ class SpotifyPlaylist:
         info = "```"
 
         # TODO: Add duration to this.
-        info += self.name + " - " + str(len(self.songs)) + " songs\n\n"
+        info += self.name + " - " + str(len(self.tracklist)) + " songs\n\n"
         info += self.description
 
         # Completing the code block encapsulation.
@@ -49,7 +49,7 @@ class SpotifyPlaylist:
 
         return info
 
-    def get_songs_str(self, start_index, end_index):
+    def get_tracklist_str(self, start_index, end_index):
         """
         Creates a prettified string containing the songs from the start index to the end index.
 
@@ -60,7 +60,7 @@ class SpotifyPlaylist:
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
         songs_str = "```"
 
-        for counter, song in enumerate(self.songs[start_index:end_index]):
+        for counter, song in enumerate(self.tracklist[start_index:end_index]):
             songs_str += str(counter + start_index + 1) + ". " + song[0] + "\n"
 
         # Completing the code block encapsulation.
@@ -95,7 +95,7 @@ class SpotifyPlaylist:
         return artists_songs
 
     @staticmethod
-    def get_songs(search_queries):
+    def get_tracklist(search_queries):
         """
         Searches for each song on youtube to find the URL of the song.
 

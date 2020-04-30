@@ -114,8 +114,8 @@ class Ritmo(discord.Client):
         playlist = SpotifyPlaylist.load_playlist(message.content[11:])
 
         counter = 0
-        while counter < len(playlist.songs):
-            await message.channel.send(playlist.get_songs_str(counter, counter + 25))
+        while counter < len(playlist.tracklist):
+            await message.channel.send(playlist.get_tracklist_str(counter, counter + 25))
             counter += 25
 
 
