@@ -49,6 +49,25 @@ class SpotifyPlaylist:
 
         return info
 
+    def get_songs_str(self, start_index, end_index):
+        """
+        Creates a prettified string containing the songs from the start index to the end index.
+
+        :param start_index: The index of the first song in the string.
+        :param end_index: The index of the last song in the string.
+        :return: The prettified string containing the songs from the start index to the end index.
+        """
+        # Encapsulating the string representation in "```" to put the text in a code block in discord.
+        songs_str = "```"
+
+        for counter, song in enumerate(self.songs[start_index:end_index]):
+            songs_str += str(counter + start_index + 1) + ". " + song[0] + "\n"
+
+        # Completing the code block encapsulation.
+        songs_str += "```"
+
+        return songs_str
+
     def save_playlist(self):
         """Saving a pickle file that contains all information about the playlist."""
         with open(self.filepath, "wb") as f:
@@ -83,3 +102,8 @@ class SpotifyPlaylist:
         :return: A list of tuples with the format: (song title, youtube URL).
         """
         return [youtube.get_video_title_url(search_query) for search_query in search_queries]
+
+    @staticmethod
+    def load_playlist(playlist_name):
+        with open("playlists/" + playlist_name + ".pickle", "rb") as f:
+            return pickle.load(f)
