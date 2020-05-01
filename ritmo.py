@@ -84,14 +84,24 @@ class Ritmo(discord.Client):
             await self.display_tracklist(message)
 
     async def play(self, message):
-        """Adds the song to the queue and starts playing songs from the queue. Creates a player if there is none."""
+        """
+        Adds the request to the queue and starts playing songs from the queue. If the request is the name of a saved
+        playlist then we put every song from that playlist in the queue. Creates a player if there is none.
+        """
         # Creating a player if there currently is none.
         if self.player is None:
             voice_channel = message.author.voice.channel
             self.player = await Player.create(voice_channel, self.user, self.song_queue)
 
-        # Appending the requested song to the song queue.
-        self.song_queue.push_song(youtube.get_video_title_url(message.content[6:]))
+        # If the content following "!play" is the name of a saved playlist then we push every song from the playlist.
+        if message.content[6:] in [playlist_name[:-7] for playlist_name in os.listdir("playlists/")]:
+            playlist = SpotifyPlaylist.load_playlist(message.content[6:])
+
+            for song in playlist.tracklist:
+                self.song_queue.push_song(song)
+        else:
+            # Appending the requested song to the song queue.
+            self.song_queue.push_song(youtube.get_video_title_url(message.content[6:]))
 
         self.player.play()
 
