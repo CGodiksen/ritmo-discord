@@ -22,7 +22,7 @@ class SpotifyPlaylist:
 
         self.name = self.playlist["name"]
         self.description = self.playlist["description"]
-        # TODO: Add a function to get the total duration of the playlist.
+        self.duration_ms = 0
 
         # Each song consists of a pair (song_title, song_url).
         self.tracklist = self.get_tracklist(self.get_search_queries())
@@ -41,8 +41,12 @@ class SpotifyPlaylist:
 
         :param verbose: Bool that decides whether or not to add the description to the info string.
         """
-        # TODO: Add duration to this.
-        info = self.name + " - " + str(len(self.tracklist)) + " songs"
+        # Converting the duration from ms to hours and minutes.
+        duration_mins = int((self.duration_ms / (1000 * 60)) % 60)
+        duration_hours = int((self.duration_ms / (1000 * 60 * 60)) % 24)
+
+        info = self.name + " - " + str(len(self.tracklist)) + " songs - " + str(duration_hours) + " hr " + \
+               str(duration_mins) + " min"
         if verbose:
             info += "\n\n" + self.description
 
@@ -85,6 +89,9 @@ class SpotifyPlaylist:
             artists_song_str = ", ".join([artists["name"] for artists in track["artists"]]) + " - " + track["name"]
 
             artists_songs.append(artists_song_str)
+
+            # Adding the duration of the track to the total duration of the playlist.
+            self.duration_ms += track["duration_ms"]
 
         return artists_songs
 
