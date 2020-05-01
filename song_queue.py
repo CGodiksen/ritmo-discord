@@ -1,4 +1,5 @@
 import youtube
+import time
 
 
 class SongQueue:
@@ -34,6 +35,10 @@ class SongQueue:
         :return: The filename of the song that is first in the queue.
         """
         del self.queue[0]
+        # If the queue contains songs but the downloaded queue is empty we know that we are currently downloading and we
+        # therefore wait for the download to finish.
+        while self.queue and not self.downloaded_queue:
+            time.sleep(0.5)
         return self.downloaded_queue.pop(0)
 
     def update_downloaded_queue(self):
@@ -48,7 +53,7 @@ class SongQueue:
     def __str__(self):
         """String representation of the entire song queue."""
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
-        queue_str = "```Song queue:\n"
+        queue_str = "```Song queue (" + str(len(self.queue)) + " songs):\n"
 
         # If there are any songs in the queue we list the song names in a numbered list.
         if self.queue:
