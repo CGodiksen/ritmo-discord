@@ -5,7 +5,6 @@ The discord bot is implemented using a class based design with the "discord.Clie
 """
 import json
 import discord
-import pickle
 import os
 import youtube
 
@@ -75,10 +74,11 @@ class Ritmo(discord.Client):
         if message.content.startswith("!delete playlist"):
             os.remove("playlists/" + message.content[17:] + ".pickle")
 
-        if message.content.startswith("!info"):
-            playlist = SpotifyPlaylist.load_playlist(message.content[6:])
+        if message.content.startswith("!list playlists"):
+            await self.display_playlists(message)
 
-            await message.channel.send(playlist.get_info_str())
+        if message.content.startswith("!info"):
+            await self.display_playlist_info(message)
 
         if message.content.startswith("!tracklist"):
             await self.display_tracklist(message)
@@ -120,8 +120,45 @@ class Ritmo(discord.Client):
 
         counter = 0
         while counter < len(playlist.tracklist):
-            await message.channel.send(playlist.get_tracklist_str(counter, counter + 25))
+            # Encapsulating the string representation in "```" to put the text in a code block in discord.
+            playlist_str = "```"
+
+            playlist_str += playlist.get_tracklist_str(counter, counter + 25)
+
+            # Completing the code block encapsulation.
+            playlist_str += "```"
+
+            await message.channel.send(playlist_str)
             counter += 25
+
+    @staticmethod
+    async def display_playlists(message):
+        """Displays the currently available playlists."""
+        # Encapsulating the string representation in "```" to put the text in a code block in discord.
+        playlists_str = "```"
+
+        for counter, playlist_name in enumerate([playlist_name[:-7] for playlist_name in os.listdir("playlists/")]):
+            playlist = SpotifyPlaylist.load_playlist(playlist_name)
+            playlists_str += str(counter + 1) + ". " + playlist.get_info_str(verbose=False) + "\n"
+
+        # Completing the code block encapsulation.
+        playlists_str += "```"
+
+        await message.channel.send(playlists_str)
+
+    @staticmethod
+    async def display_playlist_info(message):
+        """Displays full information about a playlist."""
+        # Encapsulating the string representation in "```" to put the text in a code block in discord.
+        info = "```"
+
+        playlist = SpotifyPlaylist.load_playlist(message.content[6:])
+        info += playlist.get_info_str()
+
+        # Completing the code block encapsulation.
+        info += "```"
+
+        await message.channel.send(info)
 
 
 if __name__ == '__main__':

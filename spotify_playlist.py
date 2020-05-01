@@ -35,17 +35,16 @@ class SpotifyPlaylist:
         self.filepath = self.folder + self.name + ".pickle"
         self.save_playlist()
 
-    def get_info_str(self):
-        """Returns a prettified string containing information about the playlist."""
-        # Encapsulating the string representation in "```" to put the text in a code block in discord.
-        info = "```"
+    def get_info_str(self, verbose=True):
+        """
+        Returns a prettified string containing information about the playlist.
 
+        :param verbose: Bool that decides whether or not to add the description to the info string.
+        """
         # TODO: Add duration to this.
-        info += self.name + " - " + str(len(self.tracklist)) + " songs\n\n"
-        info += self.description
-
-        # Completing the code block encapsulation.
-        info += "```"
+        info = self.name + " - " + str(len(self.tracklist)) + " songs"
+        if verbose:
+            info += "\n\n" + self.description
 
         return info
 
@@ -57,14 +56,9 @@ class SpotifyPlaylist:
         :param end_index: The index of the last song in the string.
         :return: The prettified string containing the songs from the start index to the end index.
         """
-        # Encapsulating the string representation in "```" to put the text in a code block in discord.
-        songs_str = "```"
-
+        songs_str = ""
         for counter, song in enumerate(self.tracklist[start_index:end_index]):
             songs_str += str(counter + start_index + 1) + ". " + song[0] + "\n"
-
-        # Completing the code block encapsulation.
-        songs_str += "```"
 
         return songs_str
 
