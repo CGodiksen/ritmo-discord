@@ -73,7 +73,6 @@ def download_mp3(url, save_folder):
 
         # If the file does not already exist in the download folder we download it.
         if not os.path.isfile(filepath):
-            print(url)
             ydl.download([url])
 
         return filepath

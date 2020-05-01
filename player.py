@@ -1,4 +1,5 @@
 import discord
+import os
 
 
 class Player:
@@ -39,6 +40,10 @@ class Player:
             raise Exception(str(error))
 
         if not self.voice_client.is_playing():
+            # Deleting the previously played song if there is one and if it isn't being played again shortly.
+            if self.current is not None and self.current not in self.song_queue.downloaded_queue:
+                os.remove(self.current)
+
             # If there are any songs in the queue we play the song that is first in the queue.
             if self.song_queue.queue:
                 self.current = self.song_queue.pop_song()
