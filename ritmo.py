@@ -83,6 +83,9 @@ class Ritmo(discord.Client):
         if message.content.startswith("!tracklist"):
             await self.display_tracklist(message)
 
+        if message.content.startswith("!help"):
+            await self.display_help(message)
+
     async def play(self, message):
         """
         Adds the request to the queue and starts playing songs from the queue. If the request is the name of a saved
@@ -150,15 +153,42 @@ class Ritmo(discord.Client):
     async def display_playlist_info(message):
         """Displays full information about a playlist."""
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
-        info = "```"
+        info_str = "```"
 
         playlist = SpotifyPlaylist.load_playlist(message.content[6:])
-        info += playlist.get_info_str()
+        info_str += playlist.get_info_str()
 
         # Completing the code block encapsulation.
-        info += "```"
+        info_str += "```"
 
-        await message.channel.send(info)
+        await message.channel.send(info_str)
+
+    @staticmethod
+    async def display_help(message):
+        """Displays a help message that lists the available commands with accompanying explanations."""
+        # Encapsulating the string representation in "```" to put the text in a code block in discord.
+        help_str = "```"
+
+        help_str += "!play *Song or Playlist* - Joins your voice channel and plays the song or playlist that " \
+                    "you requested.\n\n"
+        help_str += "!stop - Stops the music and leaves the voice channel.\n\n"
+        help_str += "!pause - Pauses the music.\n\n"
+        help_str += "!resume - Resumes the music.\n\n"
+        help_str += "!skip - Skips the current song and continues to the next song in the queue.\n\n"
+        help_str += "!queue - Displays the song queue.\n\n"
+        help_str += "!np - Displays the currently playing song.\n\n"
+        help_str += "!create playlist *Spotify playlist URI* - Creates a new playlist containing the songs from the" \
+                    " given spotify playlist URI. To get the playlist URI, right-click a playlist on spotify -> Share" \
+                    " -> Copy spotify URI.\n\n"
+        help_str += "!delete playlist *Playlist name* - Deletes the playlist with the given name.\n\n"
+        help_str += "!list playlists - Displays the list of available playlists.\n\n"
+        help_str += "!info *Playlist name* - Displays information about the playlist with the given name.\n\n"
+        help_str += "!tracklist *Playlist name* - Displays the tracklist of the playlist with the given name.\n\n"
+
+        # Completing the code block encapsulation.
+        help_str += "```"
+
+        await message.channel.send(help_str)
 
 
 if __name__ == '__main__':
