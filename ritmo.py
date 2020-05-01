@@ -75,11 +75,6 @@ class Ritmo(discord.Client):
         if message.content.startswith("!delete playlist"):
             os.remove("playlists/" + message.content[17:] + ".pickle")
 
-        if message.content.startswith("!test"):
-            playlist = SpotifyPlaylist.load_playlist(message.content[6:])
-
-            print(playlist.name)
-
         if message.content.startswith("!info"):
             playlist = SpotifyPlaylist.load_playlist(message.content[6:])
 
