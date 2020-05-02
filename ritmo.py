@@ -62,6 +62,9 @@ class Ritmo(discord.Client):
             if self.player is not None:
                 self.player.skip()
 
+        if message.content.startswith("!shuffle"):
+            self.song_queue.shuffle()
+
         if message.content.startswith("!queue"):
             await message.channel.send(str(self.song_queue))
 
@@ -176,6 +179,7 @@ class Ritmo(discord.Client):
         help_str += "!pause - Pauses the music.\n\n"
         help_str += "!resume - Resumes the music.\n\n"
         help_str += "!skip - Skips the current song and continues to the next song in the queue.\n\n"
+        help_str += "!shuffle - Shuffles the song queue.\n\n"
         help_str += "!queue - Displays the song queue.\n\n"
         help_str += "!np - Displays the currently playing song.\n\n"
         help_str += "!create playlist *Spotify playlist URI* - Creates a new playlist containing the songs from the" \

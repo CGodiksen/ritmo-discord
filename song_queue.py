@@ -1,5 +1,7 @@
 import youtube
 import time
+import os
+import random
 
 
 class SongQueue:
@@ -49,6 +51,22 @@ class SongQueue:
         if len(self.queue) >= 2:
             song_file = youtube.download_mp3(self.queue[1][1], "audio_files/")
             self.downloaded_queue.append(song_file)
+
+    def shuffle(self):
+        """Shuffles the song queue, randomizing the order of the songs."""
+        shuffle_queue = self.queue
+        self.queue = []
+
+        # Removing the songs from the audio files folder that were next on the queue before the shuffle.
+        for file in self.downloaded_queue:
+            os.remove(file)
+
+        # Shuffling the queue in place.
+        random.shuffle(shuffle_queue)
+
+        # Adding the songs back to the song queue.
+        for song in shuffle_queue:
+            self.push_song(song)
 
     def __str__(self):
         """String representation of the entire song queue."""
