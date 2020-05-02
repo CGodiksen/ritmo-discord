@@ -24,11 +24,15 @@ class Ritmo(discord.Client):
         self.player = None
 
     async def on_ready(self):
-        """Displaying information about the bot when it is ready to run."""
+        """Displaying information about the bot and setting the activity when it is ready to run."""
         print('Logged in as')
         print(self.user.name)
         print(self.user.id)
         print('------')
+
+        # Setting the activity to "listening to !help" to make it easier for people to learn how Ritmo works.
+        activity = discord.Activity(name='!help', type=discord.ActivityType.listening)
+        await client.change_presence(activity=activity)
 
     async def on_message(self, message):
         """
