@@ -70,6 +70,7 @@ class Ritmo(discord.Client):
 
         if message.content.startswith("!create playlist"):
             SpotifyPlaylist(message.content[17:])
+            await message.add_reaction("\N{THUMBS UP SIGN}")
 
         if message.content.startswith("!delete playlist"):
             os.remove("playlists/" + message.content[17:] + ".pickle")

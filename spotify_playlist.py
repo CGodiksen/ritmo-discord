@@ -45,12 +45,12 @@ class SpotifyPlaylist:
         duration_mins = int((self.duration_ms / (1000 * 60)) % 60)
         duration_hours = int((self.duration_ms / (1000 * 60 * 60)) % 24)
 
-        info = self.name + " - " + str(len(self.tracklist)) + " songs - " + str(duration_hours) + " hr " + \
-               str(duration_mins) + " min"
+        info_str = self.name + " - " + str(len(self.tracklist)) + " songs - " + str(duration_hours) + " hr " + \
+                   str(duration_mins) + " min"
         if verbose:
-            info += "\n\n" + self.description
+            info_str += "\n\n" + self.description
 
-        return info
+        return info_str
 
     def get_tracklist_str(self, start_index, end_index):
         """
