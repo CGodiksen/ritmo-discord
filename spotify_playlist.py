@@ -11,7 +11,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 
 class SpotifyPlaylist:
-    def __init__(self, playlist_uri):
+    def __init__(self, playlist_uri, server_id):
         # Getting the api client credentials from the config file and using them to set up a Spotify object.
         with open("config.json", "r") as config:
             config_dict = json.load(config)
@@ -27,7 +27,7 @@ class SpotifyPlaylist:
         # Each song consists of a pair (song_title, song_url).
         self.tracklist = self.get_tracklist(self.get_search_queries())
 
-        self.folder = "playlists/"
+        self.folder = "playlists/" + str(server_id) + "/"
 
         # Creating the playlists folder if it does not already exist.
         pathlib.Path(self.folder).mkdir(parents=True, exist_ok=True)
@@ -105,6 +105,6 @@ class SpotifyPlaylist:
         return [youtube.get_video_title_url(search_query) for search_query in search_queries]
 
     @staticmethod
-    def load_playlist(playlist_name):
-        with open("playlists/" + playlist_name + ".pickle", "rb") as f:
+    def load_playlist(playlist_name, server_id):
+        with open("playlists/" + str(server_id) + "/" + playlist_name + ".pickle", "rb") as f:
             return pickle.load(f)

@@ -76,11 +76,12 @@ class Ritmo(discord.Client):
             await self.player.now_playing(message)
 
         if message.content.startswith("!create playlist"):
-            SpotifyPlaylist(message.content[17:])
+            SpotifyPlaylist(message.content[17:], message.guild.id)
             await message.add_reaction("\N{THUMBS UP SIGN}")
 
         if message.content.startswith("!delete playlist"):
-            os.remove("playlists/" + message.content[17:] + ".pickle")
+            # TODO: Add a reaction if it is deleted correctly.
+            os.remove("playlists/" + str(message.guild.id) + "/" + message.content[17:] + ".pickle")
 
         if message.content.startswith("!list playlists"):
             await self.display_playlists(message)
@@ -104,9 +105,12 @@ class Ritmo(discord.Client):
             voice_channel = message.author.voice.channel
             self.player = await Player.create(voice_channel, self.user, self.song_queue)
 
+        # Getting the playlist names for the specific server by finding the filenames and removing ".pickle".
+        playlist_names = [playlist_name[:-7] for playlist_name in os.listdir("playlists/" + str(message.guild.id))]
+
         # If the content following "!play" is the name of a saved playlist then we push every song from the playlist.
-        if message.content[6:] in [playlist_name[:-7] for playlist_name in os.listdir("playlists/")]:
-            playlist = SpotifyPlaylist.load_playlist(message.content[6:])
+        if message.content[6:] in playlist_names:
+            playlist = SpotifyPlaylist.load_playlist(message.content[6:], message.guild.id)
 
             for song in playlist.tracklist:
                 self.song_queue.push_song(song)
@@ -127,7 +131,7 @@ class Ritmo(discord.Client):
         Displays the tracklist of a playlist by sending 25 songs at a time. We are limited to 25 songs due to the
         character limit on discord messages.
         """
-        playlist = SpotifyPlaylist.load_playlist(message.content[11:])
+        playlist = SpotifyPlaylist.load_playlist(message.content[11:], message.guild.id)
 
         counter = 0
         while counter < len(playlist.tracklist):
@@ -144,12 +148,15 @@ class Ritmo(discord.Client):
 
     @staticmethod
     async def display_playlists(message):
-        """Displays the currently available playlists."""
+        """Displays the currently available playlists for the server."""
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
         playlists_str = "```"
 
-        for counter, playlist_name in enumerate([playlist_name[:-7] for playlist_name in os.listdir("playlists/")]):
-            playlist = SpotifyPlaylist.load_playlist(playlist_name)
+        # Getting the playlist names for the specific server by finding the filenames and removing ".pickle".
+        playlist_names = [playlist_name[:-7] for playlist_name in os.listdir("playlists/" + str(message.guild.id))]
+
+        for counter, playlist_name in enumerate(playlist_names):
+            playlist = SpotifyPlaylist.load_playlist(playlist_name, message.guild.id)
             playlists_str += str(counter + 1) + ". " + playlist.get_info_str(verbose=False) + "\n"
 
         # Completing the code block encapsulation.
@@ -163,7 +170,7 @@ class Ritmo(discord.Client):
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
         info_str = "```"
 
-        playlist = SpotifyPlaylist.load_playlist(message.content[6:])
+        playlist = SpotifyPlaylist.load_playlist(message.content[6:], message.guild.id)
         info_str += playlist.get_info_str()
 
         # Completing the code block encapsulation.
