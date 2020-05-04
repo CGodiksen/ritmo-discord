@@ -105,6 +105,10 @@ class SpotifyPlaylist:
         return [youtube.get_video_title_url(search_query) for search_query in search_queries]
 
     @staticmethod
-    def load_playlist(playlist_name, server_id):
-        with open("playlists/" + str(server_id) + "/" + playlist_name + ".pickle", "rb") as f:
-            return pickle.load(f)
+    async def load_playlist(playlist_name, server_id, channel):
+        try:
+            with open("playlists/" + str(server_id) + "/" + playlist_name + ".pickle", "rb") as f:
+                return pickle.load(f)
+        except FileNotFoundError:
+            await channel.send("```There is no playlist with that name.```")
+

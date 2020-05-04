@@ -109,7 +109,7 @@ class Ritmo(discord.Client):
 
         # If the content following "!play" is the name of a saved playlist then we push every song from the playlist.
         if message.content[6:] in playlist_names:
-            playlist = SpotifyPlaylist.load_playlist(message.content[6:], message.guild.id)
+            playlist = await SpotifyPlaylist.load_playlist(message.content[6:], message.guild.id, message.channel)
 
             for song in playlist.tracklist:
                 self.song_queue.push_song(song)
@@ -130,7 +130,7 @@ class Ritmo(discord.Client):
             os.remove("playlists/" + str(message.guild.id) + "/" + message.content[17:] + ".pickle")
             await message.add_reaction("\N{THUMBS UP SIGN}")
         except FileNotFoundError:
-            await message.channel.send("There is no playlist with that name.")
+            await message.channel.send("```There is no playlist with that name.```")
 
     @staticmethod
     async def display_tracklist(message):
@@ -138,7 +138,7 @@ class Ritmo(discord.Client):
         Displays the tracklist of a playlist by sending 25 songs at a time. We are limited to 25 songs due to the
         character limit on discord messages.
         """
-        playlist = SpotifyPlaylist.load_playlist(message.content[11:], message.guild.id)
+        playlist = await SpotifyPlaylist.load_playlist(message.content[11:], message.guild.id, message.channel)
 
         counter = 0
         while counter < len(playlist.tracklist):
@@ -162,8 +162,13 @@ class Ritmo(discord.Client):
         # Getting the playlist names for the specific server by finding the filenames and removing ".pickle".
         playlist_names = [playlist_name[:-7] for playlist_name in os.listdir("playlists/" + str(message.guild.id))]
 
+        # If the server has no playlists then we inform the user of that.
+        if not playlist_names:
+            await message.channel.send("```This server has no playlists.```")
+            return
+
         for counter, playlist_name in enumerate(playlist_names):
-            playlist = SpotifyPlaylist.load_playlist(playlist_name, message.guild.id)
+            playlist = await SpotifyPlaylist.load_playlist(playlist_name, message.guild.id, message.channel)
             playlists_str += str(counter + 1) + ". " + playlist.get_info_str(verbose=False) + "\n"
 
         # Completing the code block encapsulation.
@@ -177,7 +182,7 @@ class Ritmo(discord.Client):
         # Encapsulating the string representation in "```" to put the text in a code block in discord.
         info_str = "```"
 
-        playlist = SpotifyPlaylist.load_playlist(message.content[6:], message.guild.id)
+        playlist = await SpotifyPlaylist.load_playlist(message.content[6:], message.guild.id, message.channel)
         info_str += playlist.get_info_str()
 
         # Completing the code block encapsulation.
