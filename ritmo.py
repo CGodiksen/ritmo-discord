@@ -80,8 +80,7 @@ class Ritmo(discord.Client):
             await message.add_reaction("\N{THUMBS UP SIGN}")
 
         if message.content.startswith("!delete playlist"):
-            # TODO: Add a reaction if it is deleted correctly.
-            os.remove("playlists/" + str(message.guild.id) + "/" + message.content[17:] + ".pickle")
+            await self.delete_playlist(message)
 
         if message.content.startswith("!list playlists"):
             await self.display_playlists(message)
@@ -124,6 +123,14 @@ class Ritmo(discord.Client):
         """Stops the audio and disconnects the bot from the voice channel."""
         await self.player.stop(message)
         self.player = None
+
+    @staticmethod
+    async def delete_playlist(message):
+        try:
+            os.remove("playlists/" + str(message.guild.id) + "/" + message.content[17:] + ".pickle")
+            await message.add_reaction("\N{THUMBS UP SIGN}")
+        except FileNotFoundError:
+            await message.channel.send("There is no playlist with that name.")
 
     @staticmethod
     async def display_tracklist(message):
